@@ -51,11 +51,16 @@
         <input type="text" name="item" placeholder="Item Name" required />
         <input type="submit" value="+ Add Item" />
       </form>
+      <div style="margin: 5px">Check all items?</div>
+      <div>
+        <label class="switch"><input type="checkbox" id="togBtn"><div class="slider round"></span></div></label>
+      </div>
     </div>
 
     <script>
       const addItems = document.querySelector(".add-items");
       const itemsList = document.querySelector(".plates");
+      const checkAllItems = document.querySelector(".switch");
       const items = JSON.parse(localStorage.getItem("items")) || [];
 
       //Give the add item event -> add the item to the list of items in the array of items
@@ -90,15 +95,29 @@
 
       function toggleDone(e) {
         if (!e.target.matches("input")) return; // skip this unless it's an input (must match what we are looking for)
-        const el = e.target;
-        const index = el.dataset.index;
+        const index = e.target.dataset.index;
         items[index].done = !items[index].done;
         localStorage.setItem("items", JSON.stringify(items));
+        populateList(items, itemsList);
+      }
+      
+      function checkAll(e) {
+        if (!e.target.matches("input")) return;
+        if(e.target.checked === true) {
+          items.forEach(function(item) {
+            item.done = true;
+          });
+        } else {
+          items.forEach(function(item) {
+            item.done = false;
+          });
+        }
         populateList(items, itemsList);
       }
 
       addItems.addEventListener("submit", addItem); // Add an item when submitted
       itemsList.addEventListener("click", toggleDone); // Listen for a click and toggle done
+      checkAllItems.addEventListener("click", checkAll); // Listen for the check all or uncheck all toggle
 
       populateList(items, itemsList);
     </script>
